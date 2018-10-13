@@ -1,0 +1,21 @@
+- depends: null
+  version: product_1
+  query: >
+    product_1
+
+- depends: product_1
+  version: product_2
+  query: >
+    product_2
+
+- depends: product_2
+  version: product_3
+  query: >
+    product_3
+
+- depends:
+    - product_2
+    - product_3
+  version: product_4
+  query: >
+    product_4

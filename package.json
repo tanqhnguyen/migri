@@ -1,0 +1,36 @@
+{
+  "name": "migri",
+  "version": "0.1.0",
+  "description": "One-way migration",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --coverage --detectOpenHandles"
+  },
+  "author": "Tan Nguyen",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/dotenv": "^4.0.3",
+    "@types/jest": "^23.3.5",
+    "@types/js-yaml": "^3.11.2",
+    "@types/lodash": "^4.14.117",
+    "@types/node": "^10.11.7",
+    "@types/pg": "^7.4.11",
+    "@types/sinon": "^5.0.5",
+    "dotenv": "^6.1.0",
+    "jest": "^23.6.0",
+    "prettier": "^1.14.3",
+    "sinon": "^6.3.5",
+    "ts-jest": "^23.10.4",
+    "tslint": "^5.11.0",
+    "tslint-config-prettier": "^1.15.0",
+    "tslint-microsoft-contrib": "^5.2.1",
+    "typescript": "^3.1.2"
+  },
+  "dependencies": {
+    "js-yaml": "^3.12.0",
+    "lodash": "^4.17.11"
+  },
+  "peerDependencies": {
+    "pg": "^7.5.0"
+  }
+}

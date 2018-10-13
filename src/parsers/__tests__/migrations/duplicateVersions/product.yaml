@@ -1,0 +1,4 @@
+- depends: null
+  version: account_1
+  query: >
+    product_1
