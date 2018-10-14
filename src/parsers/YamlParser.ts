@@ -24,6 +24,10 @@ const extractNodes = flow(
 
 export class YamlParser implements IParser {
   public parse(dir: string): Node[] {
+    if (!fs.existsSync(dir)) {
+      throw new Error(`[${dir}] does not exist`);
+    }
+
     const files = fs.readdirSync(dir).map(file => {
       const parts = file.split('.');
       const path = `${dir}/${file}`;
