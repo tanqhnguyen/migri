@@ -4,8 +4,7 @@
     "module": "commonjs",
     "declaration": true,
     "moduleResolution": "node",
-    "rootDir": ".",
-    "outDir": "lib",
+    "outDir": "./lib",
     "removeComments": true,
     "allowSyntheticDefaultImports": true,
     "importHelpers": true,
@@ -23,5 +22,5 @@
     "emitDecoratorMetadata": true,
     "lib": ["es2017", "es2015"]
   },
-  "include": ["src/**/*"]
+  "include": ["src"]
 }
