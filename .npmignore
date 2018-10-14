@@ -1,0 +1,9 @@
+.dockerignore
+.prettierrc
+coverage
+jest.config.js
+src
+test
+tsconfig.json
+tsconfig.release.json
+tslint.json

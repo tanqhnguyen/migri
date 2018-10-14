@@ -2,9 +2,10 @@
   "compilerOptions": {
     "target": "es5",
     "module": "commonjs",
+    "declaration": true,
     "moduleResolution": "node",
     "rootDir": ".",
-    "outDir": "build",
+    "outDir": "lib",
     "removeComments": true,
     "allowSyntheticDefaultImports": true,
     "importHelpers": true,
