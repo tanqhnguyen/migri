@@ -1,2 +1,7 @@
 coverage
 node_modules
+
+test/Dockerfile
+test/docker-compose.yaml
+test/run.sh
+test/debug.sh

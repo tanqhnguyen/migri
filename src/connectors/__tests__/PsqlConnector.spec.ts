@@ -73,7 +73,7 @@ describe('PsqlConnector', () => {
     });
   });
 
-  describe('#execute', () => {
+  describe('#run', () => {
     const nodes = [
       {
         version: '1',
@@ -107,9 +107,9 @@ describe('PsqlConnector', () => {
       await connector.client.query(`TRUNCATE TABLE migrations`);
     });
 
-    it('should execute nodes in order', async () => {
+    it('should run nodes in order', async () => {
       const result = await connector.run(nodes);
-      expect(result).toEqual(true);
+      expect(result).toEqual(['1', '2']);
 
       await expectTableStructure('table_1', [
         { column_name: 'id', data_type: 'integer' },
@@ -127,7 +127,7 @@ describe('PsqlConnector', () => {
       expect(migrations.map(({ version }) => version)).toEqual(['1', '2']);
     });
 
-    it('should not execute nodes that have been executed before', async () => {
+    it('should not run nodes that have been run before', async () => {
       await connector.run(nodes);
       const result = await connector.run(
         nodes.concat([
@@ -139,7 +139,7 @@ describe('PsqlConnector', () => {
           },
         ]),
       );
-      expect(result).toEqual(true);
+      expect(result).toEqual(['3']);
 
       await expectTableStructure('table_1', [
         { column_name: 'id', data_type: 'integer' },

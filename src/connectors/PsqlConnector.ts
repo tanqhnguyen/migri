@@ -44,7 +44,7 @@ export class PsqlConnector implements IConnector {
     return rows.map(({ version }) => version);
   }
 
-  public async run(nodes): Promise<boolean> {
+  public async run(nodes): Promise<string[] | null> {
     const executed = await this.getExecutedVersions();
 
     const missingNodes = nodes.filter(({ version }) => {
@@ -52,12 +52,13 @@ export class PsqlConnector implements IConnector {
     });
 
     if (!missingNodes.length) {
-      return true;
+      return [];
     }
 
     const client = await this.client.connect();
     await client.query('BEGIN');
 
+    const result = [];
     for (const node of missingNodes) {
       const query = node.query
         .trim()
@@ -73,20 +74,21 @@ export class PsqlConnector implements IConnector {
         `,
           [node.version],
         );
+        result.push(node);
       } catch (e) {
         console.error('Failed to run [%s]', node.query, e);
         await client.query('ROLLBACK');
         client.release();
-        return false;
+        return null;
       }
     }
 
     try {
       await client.query('COMMIT');
-      return true;
+      return result.map(({ version }) => version);
     } catch (e) {
       console.error('Failed to commit the migrations', e);
-      return false;
+      return null;
     } finally {
       client.release();
     }

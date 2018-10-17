@@ -33,24 +33,32 @@ export class Migrator {
     });
   }
 
+  public getNodes(versions?: string[]): Node[] {
+    const nodes = this.parser.parse(this.migrationDir);
+
+    return uniqBy<Node>(
+      flattenDeep<Node>(this.getNodesToBeExecuted(nodes)),
+      ({ version }) => version,
+    )
+      .filter(({ version }) => {
+        if (!versions || !versions.length) {
+          return true;
+        }
+
+        return versions.indexOf(version) !== -1;
+      })
+      .map(({ version, query }) => {
+        return { version, query };
+      });
+  }
+
   public async run(options?: RunOptions) {
     const optionsWithDefaultValues: RunOptions = {
       versions: [],
       ...(options || {}),
     };
 
-    const nodes = this.parser.parse(this.migrationDir);
-
-    const versions = optionsWithDefaultValues.versions;
-    const formattedNodes = flattenDeep<Node>(
-      uniqBy<Node>(this.getNodesToBeExecuted(nodes), ({ version }) => version),
-    ).filter(({ version }) => {
-      if (!versions.length) {
-        return true;
-      }
-
-      return versions.indexOf(version) !== -1;
-    });
+    const formattedNodes = this.getNodes(optionsWithDefaultValues.versions);
 
     await this.connector.init();
     const result = await this.connector.run(formattedNodes);
