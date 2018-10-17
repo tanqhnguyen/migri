@@ -1,14 +1,13 @@
 #!/usr/bin/env node
 import * as Vorpal from 'vorpal';
 
-import { isObject, mapValues } from 'lodash';
-
 import { config as setupConfig } from 'dotenv';
 
 import { PsqlConnector, IConnector } from './connectors';
 import { YamlParser, IParser } from './parsers';
 
 import { Migrator } from './Migrator';
+import { loadConfigFile, Config } from './Config';
 
 const connectors = {
   postgres: PsqlConnector,
@@ -17,28 +16,6 @@ const connectors = {
 const parsers = {
   yaml: YamlParser,
   yml: YamlParser,
-};
-
-import * as fs from 'fs';
-
-setupConfig();
-
-const vorpal = new Vorpal();
-
-const cwd = process.cwd();
-
-type Config = {
-  migrationDir: string;
-  // can't have a fixed type here because each parser/connector requires different options
-  parser: any;
-  connector: any;
-};
-
-const defaultConfig = {
-  migrationDir: 'migrations',
-  parser: {
-    name: 'yaml',
-  },
 };
 
 function getConfigFilePath(args: Vorpal.Args): string {
@@ -51,58 +28,11 @@ function getConfigFilePath(args: Vorpal.Args): string {
   return configFile.charAt(0) !== '/' ? `${cwd}/${configFile}` : configFile;
 }
 
-function processConfigValue(value) {
-  if (!isObject(value)) {
-    return value;
-  }
+setupConfig();
 
-  if (!value.env) {
-    throw new Error(
-      `Config value [${JSON.stringify(
-        value,
-      )}] is not string or number but doesn't specify env variable to load from`,
-    );
-  }
+const vorpal = new Vorpal();
 
-  const valueFromEnv = process.env[value.env];
-  const valueAsInt = parseInt(valueFromEnv, 10);
-
-  if (isNaN(valueAsInt)) {
-    return valueFromEnv;
-  }
-
-  return valueAsInt;
-}
-
-function loadConfig(path: string): Config {
-  if (!fs.existsSync(path)) {
-    throw new Error(`[${path}] does not exist`);
-  }
-
-  try {
-    const parsedConfig = require(path);
-
-    const config = {
-      ...defaultConfig,
-      ...parsedConfig,
-    };
-
-    if (!config.connector) {
-      throw new Error('Missing [connector] in config');
-    }
-
-    if (!config.connector.name) {
-      throw new Error('Missing [connector.name] in config');
-    }
-
-    config.connector = mapValues(config.connector, processConfigValue);
-    config.parser = mapValues(config.parser, processConfigValue);
-
-    return config;
-  } catch (e) {
-    throw new Error(`Invalid config file [${e.message}]`);
-  }
-}
+const cwd = process.cwd();
 
 function getConnector(config: Config): IConnector {
   const connectorName = config.connector.name;
@@ -146,7 +76,7 @@ vorpal
   .action(async (args: Vorpal.Args) => {
     try {
       const configFilePath = getConfigFilePath(args);
-      const config = loadConfig(configFilePath);
+      const config = loadConfigFile(configFilePath);
 
       const migrator = getMigrator(config);
 

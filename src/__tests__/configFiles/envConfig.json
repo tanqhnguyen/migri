@@ -1,0 +1,8 @@
+{
+  "connector": {
+    "name": "psql",
+    "password": {
+      "env": "PASSWORD"
+    }
+  }
+}
