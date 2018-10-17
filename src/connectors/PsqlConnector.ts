@@ -10,10 +10,6 @@ type Args = {
   migrationTable?: string;
 };
 
-const GET_EXECUTED_NODES = `
-  SELECT version FROM migrations;
-`;
-
 export class PsqlConnector implements IConnector {
   public client: Pool;
 
@@ -42,14 +38,14 @@ export class PsqlConnector implements IConnector {
   }
 
   private async getExecutedVersions(): Promise<string[]> {
-    const { rows } = await this.client.query(GET_EXECUTED_NODES);
+    const { rows } = await this.client.query(`
+      SELECT version FROM ${this.migrationTable};
+    `);
     return rows.map(({ version }) => version);
   }
 
-  public async execute(nodes): Promise<boolean> {
+  public async run(nodes): Promise<boolean> {
     const executed = await this.getExecutedVersions();
-    const client = await this.client.connect();
-    await client.query('BEGIN');
 
     const missingNodes = nodes.filter(({ version }) => {
       return executed.indexOf(version) === -1;
@@ -58,6 +54,9 @@ export class PsqlConnector implements IConnector {
     if (!missingNodes.length) {
       return true;
     }
+
+    const client = await this.client.connect();
+    await client.query('BEGIN');
 
     for (const node of missingNodes) {
       const query = node.query

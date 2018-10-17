@@ -5,7 +5,7 @@ import { Migrator } from '../Migrator';
 class MockConnector implements IConnector {
   public async init(): Promise<void> {}
   public async end(): Promise<void> {}
-  public async execute(): Promise<boolean> {
+  public async run(): Promise<boolean> {
     return true;
   }
 }

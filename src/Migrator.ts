@@ -8,6 +8,10 @@ type Args = {
   migrationDir: string;
 };
 
+type RunOptions = {
+  versions?: string[];
+};
+
 export class Migrator {
   private migrationDir: string;
   private parser: IParser;
@@ -29,13 +33,28 @@ export class Migrator {
     });
   }
 
-  public async run() {
+  public async run(options?: RunOptions) {
+    const optionsWithDefaultValues: RunOptions = {
+      versions: [],
+      ...(options || {}),
+    };
+
     const nodes = this.parser.parse(this.migrationDir);
 
-    const formatedNodes = flattenDeep(
+    const versions = optionsWithDefaultValues.versions;
+    const formattedNodes = flattenDeep<Node>(
       uniqBy<Node>(this.getNodesToBeExecuted(nodes), ({ version }) => version),
-    );
+    ).filter(({ version }) => {
+      if (!versions.length) {
+        return true;
+      }
 
-    return this.connector.execute(formatedNodes);
+      return versions.indexOf(version) !== -1;
+    });
+
+    await this.connector.init();
+    const result = await this.connector.run(formattedNodes);
+    await this.connector.end();
+    return result;
   }
 }

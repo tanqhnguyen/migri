@@ -8,7 +8,6 @@ WORKDIR /app
 COPY package.json .
 RUN npm install yarn -g
 RUN yarn
-RUN yarn add pg
 
 COPY ./test/.env .
 COPY ./test/wait-for-it.sh .

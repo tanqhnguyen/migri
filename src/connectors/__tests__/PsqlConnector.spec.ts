@@ -108,7 +108,7 @@ describe('PsqlConnector', () => {
     });
 
     it('should execute nodes in order', async () => {
-      const result = await connector.execute(nodes);
+      const result = await connector.run(nodes);
       expect(result).toEqual(true);
 
       await expectTableStructure('table_1', [
@@ -128,8 +128,8 @@ describe('PsqlConnector', () => {
     });
 
     it('should not execute nodes that have been executed before', async () => {
-      await connector.execute(nodes);
-      const result = await connector.execute(
+      await connector.run(nodes);
+      const result = await connector.run(
         nodes.concat([
           {
             version: '3',

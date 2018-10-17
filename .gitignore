@@ -1,3 +1,8 @@
 node_modules
 /coverage
 /lib
+
+# for local testing
+/.env
+/migrations
+/migri.js
