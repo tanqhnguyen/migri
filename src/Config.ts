@@ -8,6 +8,10 @@ const defaultConfig = {
   },
 };
 
+export interface IConfig {
+  load(filePath: string): Config;
+}
+
 export type Config = {
   migrationDir: string;
   // can't have a fixed type here because each parser/connector requires different options
@@ -38,32 +42,34 @@ function processConfigValue(value) {
   return valueAsInt;
 }
 
-export function loadConfigFile(path: string): Config {
-  if (!fs.existsSync(path)) {
-    throw new Error(`[${path}] does not exist`);
-  }
-
-  try {
-    const parsedConfig = require(path);
-
-    const config = {
-      ...defaultConfig,
-      ...parsedConfig,
-    };
-
-    if (!config.connector) {
-      throw new Error('Missing [connector] in config');
+export class JsonConfig implements IConfig {
+  public load(path: string): Config {
+    if (!fs.existsSync(path)) {
+      throw new Error(`[${path}] does not exist`);
     }
 
-    if (!config.connector.name) {
-      throw new Error('Missing [connector.name] in config');
+    try {
+      const parsedConfig = require(path);
+
+      const config = {
+        ...defaultConfig,
+        ...parsedConfig,
+      };
+
+      if (!config.connector) {
+        throw new Error('Missing [connector] in config');
+      }
+
+      if (!config.connector.name) {
+        throw new Error('Missing [connector.name] in config');
+      }
+
+      config.connector = mapValues(config.connector, processConfigValue);
+      config.parser = mapValues(config.parser, processConfigValue);
+
+      return config;
+    } catch (e) {
+      throw new Error(`Invalid config file [${e.message}]`);
     }
-
-    config.connector = mapValues(config.connector, processConfigValue);
-    config.parser = mapValues(config.parser, processConfigValue);
-
-    return config;
-  } catch (e) {
-    throw new Error(`Invalid config file [${e.message}]`);
   }
 }

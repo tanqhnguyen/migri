@@ -7,7 +7,9 @@ import { PsqlConnector, IConnector } from './connectors';
 import { YamlParser, IParser } from './parsers';
 
 import { Migrator } from './Migrator';
-import { loadConfigFile, Config } from './Config';
+import { JsonConfig, Config, IConfig } from './Config';
+
+const configLoader: IConfig = new JsonConfig();
 
 const connectors = {
   postgres: PsqlConnector,
@@ -76,7 +78,7 @@ vorpal
   .action(async (args: Vorpal.Args) => {
     try {
       const configFilePath = getConfigFilePath(args);
-      const config = loadConfigFile(configFilePath);
+      const config = configLoader.load(configFilePath);
 
       const migrator = getMigrator(config);
 

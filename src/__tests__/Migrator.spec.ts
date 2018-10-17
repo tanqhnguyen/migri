@@ -58,7 +58,3 @@ describe('Migrator', () => {
     });
   });
 });
-
-function getConfigFilePath(name) {
-  return `${__dirname}/configFiles/${name}`;
-}
