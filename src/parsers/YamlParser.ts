@@ -40,7 +40,7 @@ export class YamlParser implements IParser {
     });
 
     const nodes = extractNodes(files);
-    const formatedNodes = nodes.map(node => {
+    const formattedNodes = nodes.map(node => {
       if (!node.depends) {
         return node;
       }
@@ -62,14 +62,14 @@ export class YamlParser implements IParser {
     // check for circular dependencies
     // TODO figure out a way to show the circular dependencies
     try {
-      JSON.stringify(formatedNodes);
+      JSON.stringify(formattedNodes);
     } catch (e) {
       if (e.toString() === 'TypeError: Converting circular structure to JSON') {
         throw new Error('Circular dependencies detected');
       }
     }
 
-    const nodesGroupedByVersion = groupBy(formatedNodes, 'version');
+    const nodesGroupedByVersion = groupBy(formattedNodes, 'version');
 
     const duplicate = Object.entries(nodesGroupedByVersion)
       .map(([version, groupedNodes]) => {
@@ -84,6 +84,6 @@ export class YamlParser implements IParser {
       throw new Error(`Versions must be unique: ${duplicate.join(', ')}`);
     }
 
-    return formatedNodes;
+    return formattedNodes;
   }
 }
