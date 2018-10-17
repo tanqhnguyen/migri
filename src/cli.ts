@@ -160,4 +160,9 @@ vorpal
 
 vorpal.find('exit').remove();
 
-vorpal.parse(process.argv);
+const argv = process.argv;
+if (argv.length === 2) {
+  argv.push('help');
+}
+
+vorpal.parse(argv);

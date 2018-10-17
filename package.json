@@ -4,6 +4,9 @@
   "description": "One-way migration",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
+  "bin": {
+    "migri": "lib/cli.js"
+  },
   "scripts": {
     "test": "jest --coverage --detectOpenHandles",
     "build": "rm -rf ./lib && tsc -p tsconfig.release.json && chmod +x ./lib/cli.js",
