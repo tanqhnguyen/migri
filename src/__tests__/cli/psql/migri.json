@@ -1,0 +1,16 @@
+{
+  "connector": {
+    "name": "psql",
+    "host": "postgres",
+    "port": 5432,
+    "database": {
+      "env": "POSTGRES_DATABASE"
+    },
+    "username": {
+      "env": "POSTGRES_USERNAME"
+    },
+    "password": {
+      "env": "POSTGRES_PASSWORD"
+    }
+  }
+}

@@ -6,8 +6,7 @@ RUN mkdir /app
 WORKDIR /app
 
 COPY package.json .
-RUN npm install yarn -g
-RUN yarn
+RUN npm install
 
 COPY ./test/.env .
 COPY ./test/wait-for-it.sh .
@@ -16,3 +15,4 @@ RUN chmod +x /app/wait-for-it.sh
 RUN dos2unix /app/wait-for-it.sh
 
 COPY . .
+RUN npm link

@@ -1,0 +1,7 @@
+- depends: null
+  version: psql_test_table_1
+  query: >
+    CREATE TABLE psql_test_table (
+      id SERIAL PRIMARY KEY,
+      content TEXT
+    );
