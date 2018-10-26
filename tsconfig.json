@@ -23,5 +23,5 @@
     "lib": ["es2017", "es2015"],
     "resolveJsonModule": true
   },
-  "include": ["src"]
+  "include": ["src", "test/specs"]
 }

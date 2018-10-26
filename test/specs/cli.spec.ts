@@ -10,7 +10,7 @@ import {
   cleanUp,
   dropTable,
   truncateTable,
-} from '../connectors/__tests__/PsqlConnectorHelpers';
+} from './PsqlConnectorHelpers';
 
 const ncpAsync = promisify(ncp);
 

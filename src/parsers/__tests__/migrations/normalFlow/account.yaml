@@ -1,9 +1,0 @@
-- depends: null
-  version: account_1
-  query: >
-    account_1
-
-- depends: account_1
-  version: account_2
-  query: >
-    account_2

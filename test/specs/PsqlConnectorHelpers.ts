@@ -1,5 +1,5 @@
 import { config } from './config';
-import { getPool } from '../PsqlConnector/PsqlConnection';
+import { getPool } from '../../src/connectors/PsqlConnector/PsqlConnection';
 
 const pgPool = getPool(config.postgres);
 

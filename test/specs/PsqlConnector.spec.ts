@@ -1,5 +1,5 @@
 import { config } from './config';
-import { PsqlConnector } from '../PsqlConnector';
+import { PsqlConnector } from '../../src/connectors/PsqlConnector';
 
 import {
   verifyMigrationsTable,

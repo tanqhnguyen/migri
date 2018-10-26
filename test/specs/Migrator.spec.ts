@@ -1,6 +1,6 @@
-import { YamlParser } from '../parsers/YamlParser';
-import { IConnector } from '../connectors/Connector';
-import { Migrator } from '../Migrator';
+import { YamlParser } from '../../src/parsers/YamlParser';
+import { IConnector } from '../../src/connectors';
+import { Migrator } from '../../src/Migrator';
 
 class MockConnector implements IConnector {
   public async init(): Promise<void> {}

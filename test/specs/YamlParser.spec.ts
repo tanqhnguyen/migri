@@ -1,4 +1,4 @@
-import { YamlParser } from '../YamlParser';
+import { YamlParser } from '../../src/parsers/YamlParser';
 
 function getMigrationDir(name) {
   return `${__dirname}/migrations/${name}`;

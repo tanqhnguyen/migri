@@ -1,4 +1,4 @@
-import { JsonConfig } from '../Config';
+import { JsonConfig } from '../../src/Config';
 
 function getConfigFilePath(name) {
   return `${__dirname}/configFiles/${name}`;
