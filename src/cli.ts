@@ -5,6 +5,12 @@ import { config as setupConfig } from 'dotenv';
 
 import { MigratorFactory } from './MigratorFactory';
 
+import * as fs from 'fs';
+
+const pkg = JSON.parse(
+  fs.readFileSync(`${__dirname}/../package.json`).toString(),
+);
+
 function getConfigFilePath(args: Vorpal.Args): string {
   let configFile = args.options.config;
   if (!configFile) {
@@ -20,6 +26,10 @@ setupConfig();
 const vorpal = new Vorpal();
 
 const cwd = process.cwd();
+
+vorpal.command('version', 'Show the current version').action(async () => {
+  console.log(pkg.version);
+});
 
 vorpal
   .command('run [versions...]', 'Run migrations')
