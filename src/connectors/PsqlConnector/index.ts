@@ -1,4 +1,5 @@
 import { IConnector } from '../Connector';
+import { ILogger } from '../../loggers';
 import { Pool } from 'pg';
 import { getPool } from './PsqlConnection';
 
@@ -12,13 +13,15 @@ type Args = {
 };
 
 export class PsqlConnector implements IConnector {
-  public client: Pool;
+  private client: Pool;
+  private logger: ILogger;
 
   private migrationTable: string;
 
-  constructor(args: Args) {
+  constructor(args: Args, logger: ILogger) {
     this.client = getPool(args);
     this.migrationTable = args.migrationTable || 'migrations';
+    this.logger = logger;
   }
 
   public async init(): Promise<void> {
@@ -70,7 +73,7 @@ export class PsqlConnector implements IConnector {
         );
         result.push(node);
       } catch (e) {
-        console.error('Failed to run [%s]', node.query, e);
+        this.logger.error('Failed to run [%s]', node.query, e);
         await client.query('ROLLBACK');
         client.release();
         return null;
@@ -81,7 +84,7 @@ export class PsqlConnector implements IConnector {
       await client.query('COMMIT');
       return result.map(({ version }) => version);
     } catch (e) {
-      console.error('Failed to commit the migrations', e);
+      this.logger.error('Failed to commit the migrations', e);
       return null;
     } finally {
       client.release();

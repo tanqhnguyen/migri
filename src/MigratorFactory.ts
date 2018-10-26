@@ -1,6 +1,6 @@
 import { PsqlConnector, IConnector } from './connectors';
 import { YamlParser, IParser } from './parsers';
-import { ConsoleLogger } from './loggers';
+import { ConsoleLogger, ILogger } from './loggers';
 
 import { Migrator } from './Migrator';
 import { IConfig, Config, JsonConfig } from './Config';
@@ -23,14 +23,14 @@ const parsers = {
 
 const cwd = process.cwd();
 
-function getConnector(config: Config): IConnector {
+function getConnector(config: Config, logger: ILogger): IConnector {
   const connectorName = config.connector.name;
   const Connector = connectors[connectorName];
   if (!Connector) {
     throw new Error(`Connector [${connectorName}] is not found`);
   }
 
-  return new Connector(config.connector);
+  return new Connector(config.connector, logger);
 }
 
 function getParser(config: Config): IParser {
@@ -60,10 +60,10 @@ export class MigratorFactory {
     const configLoader = getConfigLoader(configPath);
     const config = configLoader.load(configPath);
 
-    const connector = getConnector(config);
-    const parser = getParser(config);
-
     const logger = new ConsoleLogger();
+
+    const connector = getConnector(config, logger);
+    const parser = getParser(config);
 
     const migrationDir =
       config.migrationDir.charAt(0) !== '/'

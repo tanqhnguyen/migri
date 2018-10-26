@@ -1,5 +1,6 @@
 import { config } from './config';
 import { PsqlConnector } from '../../src/connectors/PsqlConnector';
+import { EmptyLogger } from '../../src/loggers';
 
 import {
   verifyMigrationsTable,
@@ -10,11 +11,12 @@ import {
   selectAllMigrations,
 } from './PsqlConnectorHelpers';
 
+const logger = new EmptyLogger();
 describe('PsqlConnector', () => {
   let connector: PsqlConnector;
 
   beforeEach(() => {
-    connector = new PsqlConnector(config.postgres);
+    connector = new PsqlConnector(config.postgres, logger);
   });
 
   afterAll(async () => {
@@ -29,10 +31,13 @@ describe('PsqlConnector', () => {
 
     it('should create custom migrations table', async () => {
       const name = 'meh';
-      connector = new PsqlConnector({
-        ...config.postgres,
-        migrationTable: name,
-      });
+      connector = new PsqlConnector(
+        {
+          ...config.postgres,
+          migrationTable: name,
+        },
+        logger,
+      );
       await connector.init();
       await verifyMigrationsTable(name);
 
