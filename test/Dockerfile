@@ -14,5 +14,14 @@ COPY ./test/wait-for-it.sh .
 RUN chmod +x /app/wait-for-it.sh
 RUN dos2unix /app/wait-for-it.sh
 
-COPY . .
+COPY src ./src
+
+COPY tsconfig.json .
+COPY tsconfig.release.json .
+COPY tslint.json .
+
+RUN npm run build
 RUN npm link
+
+COPY jest.config.js .
+COPY test/specs ./test/specs
