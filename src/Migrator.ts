@@ -1,10 +1,12 @@
 import { IParser, Node } from './parsers/Parser';
 import { IConnector } from './connectors/Connector';
+import { ILogger } from './loggers/Logger';
 import { flattenDeep, uniqBy } from 'lodash';
 
 type Args = {
   parser: IParser;
   connector: IConnector;
+  logger: ILogger;
   migrationDir: string;
 };
 
@@ -16,10 +18,12 @@ export class Migrator {
   private migrationDir: string;
   private parser: IParser;
   private connector: IConnector;
+  private logger: ILogger;
 
   constructor(args: Args) {
     this.parser = args.parser;
     this.migrationDir = args.migrationDir;
+    this.logger = args.logger;
     this.connector = args.connector;
   }
 
@@ -62,6 +66,9 @@ export class Migrator {
 
     await this.connector.init();
     const result = await this.connector.run(formattedNodes);
+    for (const version of result) {
+      this.logger.info(`Migrated [${version}]`);
+    }
     await this.connector.end();
     return result;
   }

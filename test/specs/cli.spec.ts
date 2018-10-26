@@ -56,7 +56,9 @@ describe('cli', () => {
     });
 
     it('should work with postgresql', async () => {
-      run('migri run -c migri.json');
+      const stdout = run('migri run -c migri.json');
+      expect(stdout).toContain('Migrated [psql_test_table_1]');
+
       await verifyMigrationsTable();
       const migrations = await selectAllMigrations();
       expect(migrations.map(({ version }) => version)).toEqual([

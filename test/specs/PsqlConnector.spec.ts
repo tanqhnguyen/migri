@@ -51,7 +51,7 @@ describe('PsqlConnector', () => {
       {
         version: '1',
         query: `
-        CREATE TABLE IF NOT EXISTS table_1 (
+        CREATE TABLE table_1 (
           id SERIAL PRIMARY KEY,
           content TEXT
         );
@@ -60,7 +60,7 @@ describe('PsqlConnector', () => {
       {
         version: '2',
         query: `
-        CREATE TABLE IF NOT EXISTS table_2 (
+        CREATE TABLE table_2 (
           id SERIAL PRIMARY KEY,
           table_1_id INT REFERENCES table_1(id)
         );

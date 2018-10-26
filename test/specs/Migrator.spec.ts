@@ -1,6 +1,7 @@
 import { YamlParser } from '../../src/parsers/YamlParser';
 import { IConnector } from '../../src/connectors';
 import { Migrator } from '../../src/Migrator';
+import { EmptyLogger } from '../../src/loggers';
 
 class MockConnector implements IConnector {
   public async init(): Promise<void> {}
@@ -24,6 +25,7 @@ describe('Migrator', () => {
         parser: new YamlParser(),
         connector,
         migrationDir: getMigrationDir('normalFlow'),
+        logger: new EmptyLogger(),
       });
 
       const result = migrator.getNodes();
@@ -42,6 +44,7 @@ describe('Migrator', () => {
         parser: new YamlParser(),
         connector: new MockConnector(),
         migrationDir: getMigrationDir('interDependencies'),
+        logger: new EmptyLogger(),
       });
 
       const result = migrator.getNodes();

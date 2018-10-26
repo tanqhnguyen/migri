@@ -1,5 +1,6 @@
 import { PsqlConnector, IConnector } from './connectors';
 import { YamlParser, IParser } from './parsers';
+import { ConsoleLogger } from './loggers';
 
 import { Migrator } from './Migrator';
 import { IConfig, Config, JsonConfig } from './Config';
@@ -62,6 +63,8 @@ export class MigratorFactory {
     const connector = getConnector(config);
     const parser = getParser(config);
 
+    const logger = new ConsoleLogger();
+
     const migrationDir =
       config.migrationDir.charAt(0) !== '/'
         ? `${cwd}/${config.migrationDir}`
@@ -71,6 +74,7 @@ export class MigratorFactory {
       migrationDir,
       connector,
       parser,
+      logger,
     });
   }
 }
