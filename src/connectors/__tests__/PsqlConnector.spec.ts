@@ -1,6 +1,15 @@
 import { config } from './config';
 import { PsqlConnector } from '../PsqlConnector';
 
+import {
+  verifyMigrationsTable,
+  expectTableStructure,
+  cleanUp,
+  dropTable,
+  truncateTable,
+  selectAllMigrations,
+} from './PsqlConnectorHelpers';
+
 describe('PsqlConnector', () => {
   let connector: PsqlConnector;
 
@@ -9,44 +18,10 @@ describe('PsqlConnector', () => {
   });
 
   afterAll(async () => {
-    await connector.client.query(`
-      DROP TABLE migrations IF EXISTS;
-    `);
-    await connector.client.end();
+    await cleanUp();
   });
 
-  async function getTableStructure(name) {
-    const { rows } = await connector.client.query(
-      `
-      SELECT column_name, data_type
-      FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = $1;
-    `,
-      [name],
-    );
-
-    return rows;
-  }
-
-  async function expectTableStructure(tableName, structure) {
-    const rows = await getTableStructure(tableName);
-    expect(rows).toEqual(structure);
-  }
-
   describe('#init', () => {
-    async function verifyMigrationsTable(name = 'migrations') {
-      return expectTableStructure(name, [
-        { column_name: 'version', data_type: 'text' },
-        {
-          column_name: 'created',
-          data_type: 'timestamp with time zone',
-        },
-        {
-          column_name: 'modified',
-          data_type: 'timestamp with time zone',
-        },
-      ]);
-    }
-
     it('should create migrations table', async () => {
       await connector.init();
       await verifyMigrationsTable();
@@ -61,9 +36,7 @@ describe('PsqlConnector', () => {
       await connector.init();
       await verifyMigrationsTable(name);
 
-      await connector.client.query(`
-        DROP TABLE IF EXISTS ${name};
-      `);
+      await dropTable(name);
     });
 
     it('should be able to run multiple times', async () => {
@@ -102,9 +75,9 @@ describe('PsqlConnector', () => {
 
     afterEach(async () => {
       for (const table of tablesCreatedDuringThisTest) {
-        await connector.client.query(`DROP TABLE IF EXISTS ${table} CASCADE`);
+        await dropTable(table);
       }
-      await connector.client.query(`TRUNCATE TABLE migrations`);
+      await truncateTable('migrations');
     });
 
     it('should run nodes in order', async () => {
@@ -120,9 +93,7 @@ describe('PsqlConnector', () => {
         { column_name: 'table_1_id', data_type: 'integer' },
       ]);
 
-      const { rows: migrations } = await connector.client.query(`
-        SELECT * FROM migrations
-      `);
+      const migrations = await selectAllMigrations();
 
       expect(migrations.map(({ version }) => version)).toEqual(['1', '2']);
     });
@@ -151,9 +122,7 @@ describe('PsqlConnector', () => {
         { column_name: 'content', data_type: 'text' },
       ]);
 
-      const { rows: migrations } = await connector.client.query(`
-        SELECT * FROM migrations
-      `);
+      const migrations = await selectAllMigrations();
 
       expect(migrations.map(({ version }) => version)).toEqual(['1', '2', '3']);
     });

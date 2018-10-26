@@ -1,5 +1,6 @@
-import { IConnector } from './Connector';
+import { IConnector } from '../Connector';
 import { Pool } from 'pg';
+import { getPool } from './PsqlConnection';
 
 type Args = {
   username: string;
@@ -16,14 +17,7 @@ export class PsqlConnector implements IConnector {
   private migrationTable: string;
 
   constructor(args: Args) {
-    this.client = new Pool({
-      user: args.username,
-      database: args.database,
-      password: args.password,
-      port: args.port,
-      host: args.host,
-    });
-
+    this.client = getPool(args);
     this.migrationTable = args.migrationTable || 'migrations';
   }
 
