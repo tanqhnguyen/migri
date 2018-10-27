@@ -1,5 +1,5 @@
 import { PsqlConnector, IConnector } from './connectors';
-import { YamlParser, IParser } from './parsers';
+import { YamlParser, JsModuleParser, IParser } from './parsers';
 import { ConsoleLogger, ILogger } from './loggers';
 
 import { Migrator } from './Migrator';
@@ -19,6 +19,9 @@ const connectors = {
 const parsers = {
   yaml: YamlParser,
   yml: YamlParser,
+  js: JsModuleParser,
+  javascript: JsModuleParser,
+  json: JsModuleParser,
 };
 
 const cwd = process.cwd();
