@@ -131,5 +131,17 @@ describe('PsqlConnector', () => {
 
       expect(migrations.map(({ version }) => version)).toEqual(['1', '2', '3']);
     });
+
+    it('should update versions only', async () => {
+      const result = await connector.run(nodes, { onlyVersion: true });
+      expect(result).toEqual(['1', '2']);
+
+      await expectTableStructure('table_1', []);
+      await expectTableStructure('table_2', []);
+
+      const migrations = await selectAllMigrations();
+
+      expect(migrations.map(({ version }) => version)).toEqual(['1', '2']);
+    });
   });
 });

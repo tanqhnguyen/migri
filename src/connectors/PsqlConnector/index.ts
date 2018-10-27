@@ -1,4 +1,4 @@
-import { IConnector } from '../Connector';
+import { IConnector, RunOptions } from '../Connector';
 import { ILogger } from '../../loggers';
 import { Pool } from 'pg';
 import { getPool } from './PsqlConnection';
@@ -41,7 +41,7 @@ export class PsqlConnector implements IConnector {
     return rows.map(({ version }) => version);
   }
 
-  public async run(nodes): Promise<string[] | null> {
+  public async run(nodes, options: RunOptions = {}): Promise<string[] | null> {
     const executed = await this.getExecutedVersions();
 
     const missingNodes = nodes.filter(({ version }) => {
@@ -64,7 +64,9 @@ export class PsqlConnector implements IConnector {
         .replace(/\s+/g, ' ');
 
       try {
-        await client.query(query);
+        if (!options.onlyVersion) {
+          await client.query(query);
+        }
         await client.query(
           `
           INSERT INTO ${this.migrationTable} (version) VALUES ($1)

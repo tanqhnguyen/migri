@@ -1,7 +1,7 @@
 import { IParser, Node } from './parsers/Parser';
 import { IConnector } from './connectors/Connector';
 import { ILogger } from './loggers/Logger';
-import { flattenDeep, uniqBy } from 'lodash';
+import { flattenDeep, uniqBy, get } from 'lodash';
 
 type Args = {
   parser: IParser;
@@ -12,6 +12,7 @@ type Args = {
 
 type RunOptions = {
   versions?: string[];
+  onlyVersion?: boolean;
 };
 
 export class Migrator {
@@ -39,33 +40,31 @@ export class Migrator {
 
   public getNodes(versions?: string[]): Node[] {
     const nodes = this.parser.parse(this.migrationDir);
+    const nodesToBeExecuted = flattenDeep<Node>(
+      this.getNodesToBeExecuted(nodes),
+    ).filter(({ version }) => {
+      if (!versions || !versions.length) {
+        return true;
+      }
 
-    return uniqBy<Node>(
-      flattenDeep<Node>(this.getNodesToBeExecuted(nodes)),
-      ({ version }) => version,
-    )
-      .filter(({ version }) => {
-        if (!versions || !versions.length) {
-          return true;
-        }
+      return versions.indexOf(version) !== -1;
+    });
 
-        return versions.indexOf(version) !== -1;
-      })
-      .map(({ version, query }) => {
+    return uniqBy<Node>(nodesToBeExecuted, ({ version }) => version).map(
+      ({ version, query }) => {
         return { version, query };
-      });
+      },
+    );
   }
 
   public async run(options?: RunOptions) {
-    const optionsWithDefaultValues: RunOptions = {
-      versions: [],
-      ...(options || {}),
-    };
+    const versions = get(options, 'versions', []);
+    const onlyVersion = get(options, 'onlyVersion', false);
 
-    const formattedNodes = this.getNodes(optionsWithDefaultValues.versions);
+    const formattedNodes = this.getNodes(versions);
 
     await this.connector.init();
-    const result = await this.connector.run(formattedNodes);
+    const result = await this.connector.run(formattedNodes, { onlyVersion });
     for (const version of result) {
       this.logger.info(`Migrated [${version}]`);
     }

@@ -1,6 +1,8 @@
 import { Node } from '../parsers/Parser';
 
-type RunOptions = {};
+export type RunOptions = {
+  onlyVersion?: boolean; // default false
+};
 
 export interface IConnector {
   init(): Promise<void>;
