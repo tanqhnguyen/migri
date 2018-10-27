@@ -1,4 +1,4 @@
-import { PsqlConnector, IConnector } from './connectors';
+import { PsqlConnector, ArangoConnector, IConnector } from './connectors';
 import { YamlParser, JsModuleParser, IParser } from './parsers';
 import { ConsoleLogger, ILogger } from './loggers';
 
@@ -14,6 +14,8 @@ const connectors = {
   postgres: PsqlConnector,
   postgresql: PsqlConnector,
   psql: PsqlConnector,
+  arango: ArangoConnector,
+  arangodb: ArangoConnector,
 };
 
 const parsers = {

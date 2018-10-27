@@ -6,6 +6,10 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DATABASE}
       - POSTGRES_USER=${POSTGRES_USERNAME}
+  arango:
+    image: arangodb:3.3
+    environment:
+      - ARANGO_ROOT_PASSWORD=${ARANGO_PASSWORD}
   app:
     build:
       context: ..

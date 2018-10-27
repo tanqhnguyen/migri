@@ -1,7 +1,7 @@
 export type Node = {
   depends?: Node[] | null;
   version: string;
-  query: string;
+  query: any;
 };
 
 export interface IParser {
