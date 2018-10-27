@@ -71,5 +71,19 @@ describe('cli', () => {
         { column_name: 'content', data_type: 'text' },
       ]);
     });
+
+    it('should update versions only', async () => {
+      const stdout = run('migri run -c migri.json --only-version');
+      expect(stdout).toContain('Migrated [psql_test_table_1]');
+
+      await verifyMigrationsTable();
+      const migrations = await selectAllMigrations();
+      expect(migrations.map(({ version }) => version)).toEqual([
+        'psql_test_table_1',
+      ]);
+
+      const columns = await getTableStructure('psql_test_table');
+      expect(columns).toEqual([]);
+    });
   });
 });

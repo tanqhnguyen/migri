@@ -34,11 +34,17 @@ vorpal.command('version', 'Show the current version').action(async () => {
 vorpal
   .command('run [versions...]', 'Run migrations')
   .option('-c, --config <path>', 'Path to the config file')
+  .option(
+    '--only-version',
+    'Only update the version and do not run the actual queries',
+  )
   .action(async (args: Vorpal.Args) => {
     try {
       const migrator = MigratorFactory.fromConfigFile(getConfigFilePath(args));
 
-      await migrator.run();
+      await migrator.run({
+        onlyVersion: !!args.options['only-version'],
+      });
     } catch (e) {
       console.error(e.message);
     }
