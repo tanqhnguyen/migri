@@ -30,7 +30,7 @@ export class PsqlConnector implements IConnector {
         id SERIAL PRIMARY KEY,
         version TEXT UNIQUE,
         created TIMESTAMPTZ DEFAULT NOW(),
-        modified TIMESTAMPTZ DEFAULT NOW()
+        updated TIMESTAMPTZ DEFAULT NOW()
       );
     `);
   }
@@ -71,6 +71,9 @@ export class PsqlConnector implements IConnector {
         await client.query(
           `
           INSERT INTO ${this.migrationTable} (version) VALUES ($1)
+          ON CONFLICT ON CONSTRAINT ${this.migrationTable}_version_key
+          DO UPDATE
+            SET updated = NOW()
         `,
           [node.version],
         );

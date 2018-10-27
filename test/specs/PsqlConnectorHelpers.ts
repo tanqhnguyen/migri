@@ -32,7 +32,7 @@ export async function verifyMigrationsTable(name = 'migrations') {
       data_type: 'timestamp with time zone',
     },
     {
-      column_name: 'modified',
+      column_name: 'updated',
       data_type: 'timestamp with time zone',
     },
   ]);
