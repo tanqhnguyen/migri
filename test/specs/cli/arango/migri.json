@@ -1,0 +1,17 @@
+{
+  "parser": {
+    "name": "js"
+  },
+  "connector": {
+    "name": "arango",
+    "host": "arango",
+    "port": 8529,
+    "database": {
+      "env": "ARANGO_DATABASE"
+    },
+    "username": "root",
+    "password": {
+      "env": "ARANGO_PASSWORD"
+    }
+  }
+}
