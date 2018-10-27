@@ -7,6 +7,7 @@ WORKDIR /app
 
 COPY package.json .
 RUN npm install
+RUN npm install arangojs pg
 
 COPY ./test/.env .
 COPY ./test/wait-for-it.sh .
