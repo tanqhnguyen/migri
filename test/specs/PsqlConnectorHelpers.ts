@@ -22,6 +22,10 @@ export async function expectTableStructure(tableName, structure) {
 
 export async function verifyMigrationsTable(name = 'migrations') {
   return expectTableStructure(name, [
+    {
+      column_name: 'id',
+      data_type: 'integer',
+    },
     { column_name: 'version', data_type: 'text' },
     {
       column_name: 'created',

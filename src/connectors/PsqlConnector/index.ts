@@ -27,7 +27,8 @@ export class PsqlConnector implements IConnector {
   public async init(): Promise<void> {
     await this.client.query(`
       CREATE TABLE IF NOT EXISTS ${this.migrationTable} (
-        version TEXT PRIMARY KEY,
+        id SERIAL PRIMARY KEY,
+        version TEXT UNIQUE,
         created TIMESTAMPTZ DEFAULT NOW(),
         modified TIMESTAMPTZ DEFAULT NOW()
       );
