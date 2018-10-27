@@ -25,8 +25,6 @@ export class ArangoConnector implements IConnector {
     this.migrationCollection = args.migrationCollection || 'migrations';
     this.logger = logger;
     this.args = args;
-
-    this.logger.info(this.migrationCollection);
   }
 
   public async init(): Promise<void> {

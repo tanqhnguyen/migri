@@ -68,6 +68,9 @@ export class Migrator {
     for (const version of result) {
       this.logger.info(`Migrated [${version}]`);
     }
+    if (!result.length) {
+      this.logger.info('Nothing to run');
+    }
     await this.connector.end();
     return result;
   }
