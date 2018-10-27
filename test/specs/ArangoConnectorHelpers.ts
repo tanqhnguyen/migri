@@ -26,11 +26,12 @@ export async function collectionExists(name) {
   return db.collection(name).exists();
 }
 
-export async function selectAll(name) {
+export async function selectAll(name, sort = '') {
   const db = await getDb(config.arango);
 
   const result = await db.query(`
     FOR entry IN ${name}
+      ${sort}
       RETURN entry
   `);
 
@@ -38,7 +39,7 @@ export async function selectAll(name) {
 }
 
 export async function selectAllMigrations() {
-  return selectAll('migrations');
+  return selectAll('migrations', 'SORT entry._created ASC');
 }
 
 export async function cleanUp() {

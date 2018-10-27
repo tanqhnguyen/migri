@@ -50,16 +50,16 @@ export async function truncateTable(name) {
   `);
 }
 
-export async function selectAll(name) {
+export async function selectAll(name, orderBy = '') {
   const { rows } = await pgPool.query(`
-    SELECT * FROM ${name}
+    SELECT * FROM ${name} ${orderBy}
   `);
 
   return rows;
 }
 
 export async function selectAllMigrations() {
-  return selectAll('migrations');
+  return selectAll('migrations', 'ORDER BY id ASC');
 }
 
 export async function cleanUp() {
