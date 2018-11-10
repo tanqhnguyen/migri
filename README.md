@@ -131,4 +131,19 @@ There are few things here, first of all, the file consists of multiple migration
     );
 ```
 
+Migration files can be in any format as long as there is a suitable parser to read it. ArangoDB for instance requires a different migration format.
+
+```js
+// arango_test_collection.js
+module.exports = [
+  {
+    depends: null,
+    version: 'arango_test_collection_1',
+    query(db) {
+      return db.collection('arango_test_collection').create();
+    },
+  },
+];
+```
+
 By default, `migri` looks for migration files in `migrations` folder relative to the current working directory. Set `migrationDir` option in the config file to change the location.
