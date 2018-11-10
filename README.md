@@ -24,7 +24,7 @@ yarn add migri
 
 Add a new script to your package.json
 
-```
+```json
 {
   "scripts": {
     "migration": "migri"
@@ -42,7 +42,7 @@ At the moment, only Postgresql and ArangoDB are supported. However, adding new d
 ## Config file
 By default if you don't specify any custom config file (through `-c` option), the default config file `migri.json` at the current working directory is used. The config file varies depending on the database that you are targeting. Below is an example for Postgresql
 
-```
+```json
 {
   "connector": {
     "name": "psql",
@@ -65,7 +65,7 @@ It's straight forward, the required `connector.name` specifies what the database
 
 Here is another example for ArangoDB
 
-```
+```json
 {
   "parser": {
     "name": "js"
@@ -91,7 +91,7 @@ In this one, there is also `parser` setting, this setting changes how `migri` pa
 
 As mentioned previously, by default, `migri` uses `yaml` as the migration file's format, here is one example, `account.yaml` to create account table
 
-```
+```yaml
 - depends: null
   version: account_1
   query: >
@@ -107,7 +107,7 @@ As mentioned previously, by default, `migri` uses `yaml` as the migration file's
 
 There are few things here, first of all, the file consists of multiple migration entries, each entry has `query` specifying the query that will be run. Then, there is a `version`, each version needs to be unique across all the migration files. A common way to name it is to use the file name + author + a number. It's so that when in a team, we can separate our migrations from others and resolve conflicts easier if any. Back to the example, the last attribute is `depends`. This specifies the dependencies of the migration. For example, when we need to create a `comment` table, and it depends on the latest version (`account_2`) of the account table, we have the following migration file (`comment.yaml`)
 
-```
+```yaml
 - depends: account_2
   version: comment_1
   query: >
@@ -119,7 +119,7 @@ There are few things here, first of all, the file consists of multiple migration
 
 `depends` can be an array, so we can do this
 
-```
+```yaml
 - depends:
   - account_2
   - another_table_1
