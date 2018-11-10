@@ -3,14 +3,14 @@
 [![Build Status](https://travis-ci.org/tanqhnguyen/migri.svg?branch=master)](https://travis-ci.org/tanqhnguyen/migri)
 [![npm version](https://badge.fury.io/js/migri.svg)](https://badge.fury.io/js/migri)
 
-# Motivation
+## Motivation
 In a side project, I need to have a migration tool for both Postgresql and ArangoDB, can't find anything for ArangoDB, and all the available ones for Postgresql are kinda hard to use. For example, most of them organize the migration files in a flat structure, meaning that when there are many of them, it's impossible to keep track of the changes or revisit old changes.
 
 Few years ago, I worked with this library called [schemup](https://github.com/brendonh/schemup), the way it works is to logically organize the migration files into groups. In a relational database, it means that each table and its related migrations are put inside a single file. The benefit is that all the changes to that particular table are easily managed.
 
 I have been trying to look for a similar solution in Javascript but no luck, hence this library. `migri` is in its very early stage and used only in my side project.
 
-# Install
+## Install
 
 ```
 npm install migri --save
@@ -36,10 +36,10 @@ Then, just run `npm run migration run` or `yarn migration run` to apply the late
 
 Run `npm run migration help` to see all the available commands and options. There is only 1 at the moment, though
 
-# Supported databases
+## Supported databases
 At the moment, only Postgresql and ArangoDB are supported. However, adding new databases are as easy as adding a new connector and then implement 3 methods.
 
-# Config file
+## Config file
 By default if you don't specify any custom config file (through `-c` option), the default config file `migri.json` at the current working directory is used. The config file varies depending on the database that you are targeting. Below is an example for Postgresql
 
 ```
@@ -87,7 +87,7 @@ Here is another example for ArangoDB
 
 In this one, there is also `parser` setting, this setting changes how `migri` parses the migration files, by default, it uses `yaml` format (more on this later). However, in the case of ArangoDB, they don't have any query to create collections (similar to tables in the relational world). Therefore, we need to pass the whole database object, hence the `js` format.
 
-# Migration files
+## Migration files
 
 As mentioned previously, by default, `migri` uses `yaml` as the migration file's format, here is one example, `account.yaml` to create account table
 
@@ -130,3 +130,5 @@ There are few things here, first of all, the file consists of multiple migration
       author_id INT REFERENCES account(id)
     );
 ```
+
+By default, `migri` looks for migration files in `migrations` folder relative to the current working directory. Set `migrationDir` option in the config file to change the location.
