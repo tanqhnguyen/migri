@@ -61,10 +61,7 @@ function getConfigLoader(configPath): IConfig {
 }
 
 export class MigratorFactory {
-  public static fromConfigFile(configPath: string): Migrator {
-    const configLoader = getConfigLoader(configPath);
-    const config = configLoader.load(configPath);
-
+  public static fromConfig(config: Config): Migrator {
     const logger = new ConsoleLogger();
 
     const connector = getConnector(config, logger);
@@ -81,5 +78,12 @@ export class MigratorFactory {
       parser,
       logger,
     });
+  }
+
+  public static fromConfigFile(configPath: string): Migrator {
+    const configLoader = getConfigLoader(configPath);
+    const config = configLoader.load(configPath);
+
+    return this.fromConfig(config);
   }
 }
