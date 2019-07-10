@@ -19,12 +19,12 @@ export type Config = {
   connector: any;
 };
 
-function processConfigValue(value) {
+function processConfigValue(value: any) {
   if (!isObject(value)) {
     return value;
   }
 
-  if (!value.env) {
+  if (!(value as any).env) {
     throw new Error(
       `Config value [${JSON.stringify(
         value,
@@ -32,7 +32,7 @@ function processConfigValue(value) {
     );
   }
 
-  const valueFromEnv = process.env[value.env];
+  const valueFromEnv = process.env[(value as any).env];
   const valueAsInt = parseInt(valueFromEnv, 10);
 
   if (isNaN(valueAsInt)) {
